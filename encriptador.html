@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style_encrip CSS.css">
+    
+</head>
+<body>
+
+    <div class="container">
+        <textarea id="chat-box" class="chat-box"></textarea>
+        <textarea id="encripto-box" class="encripto-box">hola</textarea> 
+        <img class="imagen__espera" src="./imagenes/Muñeco.png">
+        <div class="buttons">
+            <button id="encrypt-btn">Encriptar</button>
+            <button id="download-btn">Descárgalo</button> <!-- Botón de descarga -->
+            <button id="decrypt-btn">Desencriptar</button>
+
+                   
+
+
+        </div>
+    </div>
+
+    <script>
+        const encryptionMap = new Map(); // Mapa para almacenar las encriptaciones aleatorias
+
+        function generarCadenaAleatoria(longitud) {
+            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+            let resultado = '';
+            for (let i = 0; i < longitud; i++) {
+                resultado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+            }
+            return resultado;
+        }
+
+        function encriptar(texto) {
+            let textoEncriptado = '';
+            for (let char of texto) {
+                if (!encryptionMap.has(char)) {
+                    encryptionMap.set(char, generarCadenaAleatoria(5)); // Genera una cadena aleatoria de 5 caracteres
+                }
+                textoEncriptado += encryptionMap.get(char);
+            }
+            return textoEncriptado;
+        }
+
+        function desencriptar(texto) {
+            let textoDesencriptado = texto;
+            for (let [char, encriptado] of encryptionMap.entries()) {
+                textoDesencriptado = textoDesencriptado.split(encriptado).join(char);
+            }
+            return textoDesencriptado;
+        }
+
+        function descargarTexto(texto, nombreArchivo) { // Función para descargar el texto
+            const elemento = document.createElement('a');
+            const archivo = new Blob([texto], { type: 'text/plain' });
+            elemento.href = URL.createObjectURL(archivo);
+            elemento.download = nombreArchivo;
+            document.body.appendChild(elemento);
+            elemento.click();
+            document.body.removeChild(elemento);
+        }
+
+        document.getElementById("encrypt-btn").addEventListener("click", function() {
+            const chatBox = document.getElementById("chat-box");
+            chatBox.value = encriptar(chatBox.value);
+        });
+
+        document.getElementById("decrypt-btn").addEventListener("click", function() {
+            const encripto-box = document.getElementById("encripto-box");
+            chatBox.value = desencriptar(chatBox.value);
+        });
+
+        document.getElementById("download-btn").addEventListener("click", function() { // Evento para el botón de descarga
+            const chatBox = document.getElementById("chat-box");
+            descargarTexto(chatBox.value, 'texto_encriptado.txt');
+        });
+    </script>
+    
+
+</body>
+    
+
+<footer class="footer">
+   <p> DESIGN BY DIEG0 </p> 
+</footer>
+</html>
